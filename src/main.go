@@ -8,6 +8,13 @@ func userHandler(w http.ResponseWriter, r *http.Request){
 }
 
 func productHandler(w http.ResponseWriter, r *http.Request){
+	fmt.Println(r.Method)
+	if r.Method == "GET" {
+		fmt.Println("GET Method retrieved")
+	}
+	if r.Method == "POST" {
+        fmt.Println("POST Method retrieved")
+    }
     w.Write([]byte("Hello from /api/product"))
 }
 
