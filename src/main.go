@@ -22,7 +22,7 @@ func main(){
 	})
 
 	http.HandleFunc("/api/user", userHandler)
-	http.HandleFunc("/api/product", handler.ProductHandler)
+	http.HandleFunc("/api/product", handler.ProductHandler) //if p is lowercase it wont be accessible to this file. If p is uppercase it will be accessible.
 
 	fmt.Println("HTTP Server is running on port 8080")
 	err := s.ListenAndServe()
