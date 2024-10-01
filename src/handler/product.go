@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/http"
-	"encoding/json")
+)
 
 type Product struct{
 	Id int `json:"id"`// if its lowercase its detected as local variable
@@ -17,26 +19,22 @@ var ProdList []*Product = []*Product{
         Name: "Fish",
         Price: 10000,
         Stock: 120,
-	}
+	},
 
 	&Product{
 		Id: 2,
         Name: "Chips",
         Price: 15000,
         Stock: 80,
-	}
+	},
 }
 
 func ProductHandler(w http.ResponseWriter, r *http.Request){
 	if r.Method == "POST" {
-		p := Product{
-			Id: 3,
-			Name: "Fan",
-			Price: 100000,
-			Stock: 120,
-		}
+		var p Product 
 
-		ProdList = append(ProdList, &p)
+		json.NewDecoder(r.Body).Decode(&p)
+		fmt.Println(p)
 		w.WriteHeader(http.StatusCreated)
 		w.Write([]byte("product added successfully"))
 		return
