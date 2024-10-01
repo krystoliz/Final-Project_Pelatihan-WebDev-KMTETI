@@ -11,14 +11,23 @@ type Product struct{
 	Stock uint `json:"stock"`
 }
 
-var prodList []*Product
+var ProdList []*Product
 
 func ProductHandler(w http.ResponseWriter, r *http.Request){
-	if r.Method != "GET" {
-		w.WriteHeader(http.StatusMethodNotAllowed) 
-		w.Write([]byte("Method Not Allowed"))
+	if r.Method == "POST" {
+		p := Product{
+			Id: 3,
+			Name: "Fan",
+			Price: 100000,
+			Stock: 120,
+		}
+
+		ProdList = append(ProdList, &p)
+		w.WriteHeader(http.StatusCreated)
+		w.Write([]byte("product added successfully"))
 		return
 	}
+	
 	
 	p1 := Product{
 		Id: 1,
@@ -34,8 +43,8 @@ func ProductHandler(w http.ResponseWriter, r *http.Request){
         Stock: 80,
 	}
 
-	prodList = append(prodList, &p1,&p2)
+	ProdList = append(ProdList, &p1,&p2)
 
 	w.Header().Add("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(prodList)
+    json.NewEncoder(w).Encode(ProdList)
 }
