@@ -2,7 +2,7 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
+	
 	"net/http"
 )
 
@@ -34,7 +34,7 @@ func ProductHandler(w http.ResponseWriter, r *http.Request){
 		var p Product 
 
 		json.NewDecoder(r.Body).Decode(&p)
-		fmt.Println(p)
+		ProdList = append(ProdList, &p)
 		w.WriteHeader(http.StatusCreated)
 		w.Write([]byte("product added successfully"))
 		return
