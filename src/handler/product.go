@@ -1,6 +1,8 @@
 package handler
 
-import "net/http"
+import (
+	"net/http"
+	"encoding/json")
 
 type Product struct{
 	Id int `json:"id"`// if its lowercase its detected as local variable
@@ -22,5 +24,5 @@ func ProductHandler(w http.ResponseWriter, r *http.Request){
         Price: 10000,
         Stock: 120,
 	}
-    w.Write([]byte("Hello from /api/product"))
+    json.NewEncoder(w).Encode(p1)
 }
