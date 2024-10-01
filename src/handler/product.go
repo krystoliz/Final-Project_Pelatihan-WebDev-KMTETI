@@ -3,10 +3,10 @@ package handler
 import "net/http"
 
 type Product struct{
-	Id int// if its lowercase its detected as local variable
-	Name string
-	Price int
-	Stock uint
+	Id int `json:"id"`// if its lowercase its detected as local variable
+	Name string `json:"name"`
+	Price int `json:"price"`
+	Stock uint `json:"stock"`
 }
 
 func ProductHandler(w http.ResponseWriter, r *http.Request){
@@ -16,5 +16,11 @@ func ProductHandler(w http.ResponseWriter, r *http.Request){
 		return
 	}
 	
+	p1 := Product{
+		Id: 1,
+        Name: "Fish",
+        Price: 10000,
+        Stock: 120,
+	}
     w.Write([]byte("Hello from /api/product"))
 }
