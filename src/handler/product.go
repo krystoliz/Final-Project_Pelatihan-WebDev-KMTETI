@@ -11,7 +11,21 @@ type Product struct{
 	Stock uint `json:"stock"`
 }
 
-var ProdList []*Product
+var ProdList []*Product = []*Product{
+	 &Product{
+		Id: 1,
+        Name: "Fish",
+        Price: 10000,
+        Stock: 120,
+	}
+
+	&Product{
+		Id: 2,
+        Name: "Chips",
+        Price: 15000,
+        Stock: 80,
+	}
+}
 
 func ProductHandler(w http.ResponseWriter, r *http.Request){
 	if r.Method == "POST" {
@@ -29,21 +43,9 @@ func ProductHandler(w http.ResponseWriter, r *http.Request){
 	}
 	
 	
-	p1 := Product{
-		Id: 1,
-        Name: "Fish",
-        Price: 10000,
-        Stock: 120,
-	}
+	
 
-	p2 := Product{
-		Id: 2,
-        Name: "Chips",
-        Price: 15000,
-        Stock: 80,
-	}
 
-	ProdList = append(ProdList, &p1,&p2)
 
 	w.Header().Add("Content-Type", "application/json")
     json.NewEncoder(w).Encode(ProdList)
