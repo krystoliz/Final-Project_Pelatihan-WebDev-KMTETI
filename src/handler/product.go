@@ -30,21 +30,25 @@ var ProdList []*Product = []*Product{
 }
 
 func ProductHandler(w http.ResponseWriter, r *http.Request){
-	if r.Method == "POST" {
-		var p Product 
+	switch r.Method {
+		case "GET":
+            w.Header().Add("Content-Type", "application/json")
+            json.NewEncoder(w).Encode(ProdList)
+            return
 
-		json.NewDecoder(r.Body).Decode(&p)
-		ProdList = append(ProdList, &p)
-		w.WriteHeader(http.StatusCreated)
-		w.Write([]byte("product added successfully"))
-		return
+		case "POST":
+			var p Product 
+			json.NewDecoder(r.Body).Decode(&p)
+			ProdList = append(ProdList, &p)
+			w.WriteHeader(http.StatusCreated)
+			w.Write([]byte("product added successfully"))
+			return
+
+		
+        default:
+            w.WriteHeader(http.StatusMethodNotAllowed)
+			w.Write([]byte("Method not allowed"))
+			return
 	}
-	
-	
-	
 
-
-
-	w.Header().Add("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(ProdList)
 }
