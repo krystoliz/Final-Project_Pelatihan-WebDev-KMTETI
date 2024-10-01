@@ -24,5 +24,16 @@ func ProductHandler(w http.ResponseWriter, r *http.Request){
         Price: 10000,
         Stock: 120,
 	}
-    json.NewEncoder(w).Encode(p1)
+
+	p2 := Product{
+		Id: 2,
+        Name: "Chips",
+        Price: 15000,
+        Stock: 80,
+	}
+
+	prodList := []*Product{ &p1, &p2}
+
+	w.Header().Add("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(prodList)
 }
