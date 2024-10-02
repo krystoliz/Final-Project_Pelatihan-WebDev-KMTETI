@@ -8,9 +8,10 @@ import (
 
 type Product struct{
 	Id int `json:"id"`// if its lowercase its detected as local variable
-	Name string `json:"name"`
-	Price int `json:"price"`
-	Stock uint `json:"stock"`
+	Title string `json:"title"`
+	Author string `json:"author"`
+	Pages int `json:"pages"`
+	Year uint `json:"year"`
 }
 
 var ProdList []*Product = []*Product{
