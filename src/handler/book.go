@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-type Product struct{
+type Book struct{
 	Id int `json:"id"`// if its lowercase its detected as local variable
 	Title string `json:"title"`
 	Author string `json:"author"`
@@ -14,35 +14,37 @@ type Product struct{
 	Year uint `json:"year"`
 }
 
-var ProdList []*Product = []*Product{
-	 &Product{
+var BookList []*Book = []*Book{
+	 &Book{
 		Id: 1,
-        Name: "Fish",
-        Price: 10000,
-        Stock: 120,
+        Title: "Unf/Air",
+        Author: "ARTMS",
+        Pages: 120,
+		Year: 2024,
 	},
 
-	&Product{
+	&Book{
 		Id: 2,
-        Name: "Chips",
-        Price: 15000,
-        Stock: 80,
+        Title: "Cotton Candy",
+        Author: "Loossemble",
+        Pages: 120,
+		Year: 2024,
 	},
 }
 
-func ProductHandler(w http.ResponseWriter, r *http.Request){
+func BookHandler(w http.ResponseWriter, r *http.Request){
 	switch r.Method {
 		case "GET":
             w.Header().Add("Content-Type", "application/json")
-            json.NewEncoder(w).Encode(ProdList)
+            json.NewEncoder(w).Encode(BookList)
             return
 
 		case "POST":
-			var p Product 
-			json.NewDecoder(r.Body).Decode(&p)
-			ProdList = append(ProdList, &p)
+			var b Book 
+			json.NewDecoder(r.Body).Decode(&b)
+			BookList = append(BookList, &b)
 			w.WriteHeader(http.StatusCreated)
-			w.Write([]byte("product added successfully"))
+			w.Write([]byte("book added successfully"))
 			return
 
 		
