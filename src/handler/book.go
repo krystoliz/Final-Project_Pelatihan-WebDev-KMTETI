@@ -46,8 +46,11 @@ func BookHandler(w http.ResponseWriter, r *http.Request){
 			w.WriteHeader(http.StatusCreated)
 			w.Write([]byte("book added successfully"))
 			return
-
 		
+		case "PUT":
+
+		case "DELETE":
+
         default:
             w.WriteHeader(http.StatusMethodNotAllowed)
 			w.Write([]byte("Method not allowed"))
