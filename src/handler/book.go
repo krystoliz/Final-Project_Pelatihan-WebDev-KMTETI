@@ -7,7 +7,9 @@ import (
 	"net/http"
 
 	"github.com/krystoliz/Final-Project_Pelatihan-WebDev-KMTETI/src/db"
+	"github.com/krystoliz/Final-Project_Pelatihan-WebDev-KMTETI/src/model"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Book struct{
@@ -54,11 +56,17 @@ func BookHandler(w http.ResponseWriter, r *http.Request){
 				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 				return
 			}
-			var prod BookModel
-			var bookList []*BookModel
+			
+			var bookList []*model.Book
 
 			for cur.Next(context.TODO()){
-				cur.Decode(&prod)
+				var prod model.Book
+				err:= cur.Decode(&prod)
+				if err!= nil{
+					http.Error(w, "Error decoding data", http.StatusInternalServerError)
+					return
+				}
+				
 				fmt.Println(prod)
 				bookList = append(bookList, &prod)
 			}
@@ -76,6 +84,30 @@ func BookHandler(w http.ResponseWriter, r *http.Request){
 				http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 				return
 			}
+
+			db, err := db.DBConnection()
+			if err != nil{
+				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+				return
+			}
+
+			coll := db.MongoDB.Collection("buku")
+
+			_, err = coll.InsertOne(context.TODO(), model.Book{
+				ID: primitive.NewObjectID(),
+				Title: b.Title,
+				Author: b.Author,
+				Stock: b.Stock,
+				Year_released: int(b.Year_released),
+				Price: int(b.Price),
+			})
+			
+			if err != nil{
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			w.WriteHeader(http.StatusCreated)
+			w.Write([]byte("book added successfully"))
 		
 		case "PUT":
 
@@ -89,14 +121,7 @@ func BookHandler(w http.ResponseWriter, r *http.Request){
 
 }
 
-type BookModel struct{
-	ID string `bson:"_id,emitonempty"`
-	Title string `bson:"title"`
-	Author string `bson:"author"`
-	Stock int `bson:"stock"`
-	Year_released int `bson:"year_released"`
-	Price int `bson:"price"`
-}
+
 
 func NewProductHandler(w http.ResponseWriter, r *http.Request){
 	
