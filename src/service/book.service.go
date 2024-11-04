@@ -59,6 +59,9 @@ func GetAllBook() (*BookResponse, error) {
 		cur.Decode(&book)
 		bookList = append(bookList, &Book{
 			Title: book.Title,
+			Author: book.Author,
+			Stock: book.Stock,
+			Year_released: book.Year_released,
 			Price: book.Price,
 		})
 
