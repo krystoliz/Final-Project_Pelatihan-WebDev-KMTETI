@@ -44,7 +44,7 @@ func GetAllBook() (*BookResponse, error) {
 		return nil, errors.New("Internal Server Error")
 		
 	}
-
+	defer db.MongoDB.Client().Disconnect(context.TODO())
 	coll := db.MongoDB.Collection("buku")
 	cur, err := coll.Find(context.TODO(), bson.D{})
 
@@ -84,7 +84,7 @@ func CreateBook(req io.Reader) error {
 				log.Default().Println(err.Error())
 				return errors.New("Internal Server Error")
 			}
-
+			defer db.MongoDB.Client().Disconnect(context.TODO())
 			coll := db.MongoDB.Collection("buku")
 
 			_, err = coll.InsertOne(context.TODO(), model.Book{
