@@ -1,17 +1,17 @@
 package handler
 
 import (
-	"context"
+	/* "context" */
 	"encoding/json"
 	/* "fmt" */
 
 	"net/http"
 
-	"github.com/krystoliz/Final-Project_Pelatihan-WebDev-KMTETI/src/db"
-	"github.com/krystoliz/Final-Project_Pelatihan-WebDev-KMTETI/src/model"
+	/* "github.com/krystoliz/Final-Project_Pelatihan-WebDev-KMTETI/src/db"
+	"github.com/krystoliz/Final-Project_Pelatihan-WebDev-KMTETI/src/model" */
 	"github.com/krystoliz/Final-Project_Pelatihan-WebDev-KMTETI/src/service"
 	/* "go.mongodb.org/mongo-driver/bson" */
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	/* "go.mongodb.org/mongo-driver/bson/primitive" */
 )
 
 func BookHandler(w http.ResponseWriter, r *http.Request){
@@ -31,37 +31,19 @@ func BookHandler(w http.ResponseWriter, r *http.Request){
 
 
 	case "POST":
-		var b model.Book 
-		err := json.NewDecoder(r.Body).Decode(&b)
-		if err != nil{
-			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-			return
+		err := service.CreateBook(r.Body)
+		if err != nil {
+			if err.Error() == "bad request"{
+				http.Error(w, err.Error(), http.StatusBadRequest)
+
+			}
+			http.Error(w, "internal server error" , http.StatusInternalServerError)
+			
 		}
-
-		db, err := db.DBConnection()
-		if err != nil{
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-			return
-		}
-
-		coll := db.MongoDB.Collection("buku")
-
-		_, err = coll.InsertOne(context.TODO(), model.Book{
-			ID: primitive.NewObjectID(),
-			Title: b.Title,
-			Author: b.Author,
-			Stock: b.Stock,
-			Year_released: int(b.Year_released),
-			Price: int(b.Price),
-		})
 		
-		if err != nil{
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
+		w.Header().Add("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
-		w.Write([]byte("book added successfully"))
-	
+		json.NewEncoder(w).Encode("Book has been created successfully")
 	case "PUT":
 
 	case "DELETE":
