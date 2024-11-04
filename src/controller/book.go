@@ -1,4 +1,4 @@
-package handler
+package controller
 
 import (
 	"context"
@@ -41,7 +41,7 @@ var BookList []*Book = []*Book{
 	},
 }
 
-func BookHandler(w http.ResponseWriter, r *http.Request){
+func BookController(w http.ResponseWriter, r *http.Request){
 	switch r.Method {
 		case "GET":
 			db, err := db.DBConnection()
