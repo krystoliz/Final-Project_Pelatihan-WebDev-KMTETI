@@ -185,7 +185,9 @@ go run main.go
 ├── go.mod
 ├── go.sum
 ├── README.md
-└── .gitignore
+├── .gitignore
+└── dist/
+    └── server.exe
 ```
 
 ## Data Models
