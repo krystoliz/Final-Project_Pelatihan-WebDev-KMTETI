@@ -187,3 +187,34 @@ func UpdateBook(req io.Reader) error{
 
     return nil
 }
+
+func DeleteBook(title string) error {
+    if title == "" {
+        return errors.New("Title is required")
+    }
+
+    db, err := db.DBConnection()
+    if err != nil {
+        log.Default().Println(err.Error())
+        return errors.New("Internal Server Error")
+    }
+    defer db.MongoDB.Client().Disconnect(context.TODO())
+
+    coll := db.MongoDB.Collection("buku")
+
+    // Create filter for the specific book
+    filter := bson.M{"title": title}
+
+    // Delete the document
+    result, err := coll.DeleteOne(context.TODO(), filter)
+    if err != nil {
+        log.Default().Println(err.Error())
+        return errors.New("Internal Server Error")
+    }
+
+    if result.DeletedCount == 0 {
+        return errors.New("Book not found")
+    }
+
+    return nil
+}

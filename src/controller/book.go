@@ -112,6 +112,23 @@ func BookController(w http.ResponseWriter, r *http.Request){
         json.NewEncoder(w).Encode("Book has been updated successfully")
         return
 	case "DELETE":
+		title := r.URL.Query().Get("title")
+        err := service.DeleteBook(title)
+        if err != nil {
+            switch err.Error() {
+            case "Title is required":
+                http.Error(w, err.Error(), http.StatusBadRequest)
+            case "Book not found":
+                http.Error(w, err.Error(), http.StatusNotFound)
+            default:
+                http.Error(w, "Internal server error", http.StatusInternalServerError)
+            }
+            return
+        }
+        w.Header().Add("Content-Type", "application/json")
+        w.WriteHeader(http.StatusOK)
+        json.NewEncoder(w).Encode("Book has been deleted successfully")
+        return
 
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
