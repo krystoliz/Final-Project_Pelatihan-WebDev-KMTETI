@@ -19,8 +19,8 @@ import (
 type Book struct{
 	Title string `json:"title"`
 	Author string `json:"author"`
-	Stock int `json:"stock"`
-	Year_released int `json:"year_released"`
+	/* Stock int `json:"stock"`
+	Year_released int `json:"year_released"` */
 	Price int `json:"price"`
 }
 
@@ -55,13 +55,12 @@ func GetAllBook() (*BookResponse, error) {
 	var bookList []*Book
 
 	for cur.Next(context.TODO()) {
-		var book model.Book
+		var book model.ShowAllBook
 		cur.Decode(&book)
 		bookList = append(bookList, &Book{
 			Title: book.Title,
 			Author: book.Author,
-			Stock: book.Stock,
-			Year_released: book.Year_released,
+			
 			Price: book.Price,
 		})
 

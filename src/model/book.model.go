@@ -10,3 +10,11 @@ type Book struct {
 	Year_released int                `bson:"year_released"`
 	Price         int                `bson:"price"`
 }
+
+type ShowAllBook struct {
+	
+	Title         string             `bson:"title"`
+	Author        string             `bson:"author"`
+	
+	Price         int                `bson:"price"`
+}
