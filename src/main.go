@@ -31,7 +31,7 @@ func main() {
 	h.HandleFunc("/api/books", controller.BookController) //if p is lowercase it wont be accessible to this file. If p is uppercase it will be accessible.
 	h.HandleFunc("/api/books-serverless", h1.BookHandler) 
 	h.HandleFunc("/api/test-db", controller.NewProductHandler)
-
+	h.HandleFunc("/api/employee", controller.EmployeeController)
 	fmt.Println("HTTP Server is running on port 8080")
 	err := s.ListenAndServe()
 	if err != nil { //error handling
