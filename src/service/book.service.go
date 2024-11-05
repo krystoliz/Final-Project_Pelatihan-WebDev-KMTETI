@@ -33,6 +33,11 @@ type BookRequest struct{
 	Price int `json:"price"`
 }
 
+type UpdateBookRequest struct{
+	Title string `json:"title"`
+	Price int `json:"price"`
+	Stock int `json:"stock"`
+}
 
 type BookResponse struct{
 	Data []*Book `json:"data"`
@@ -140,4 +145,45 @@ func GetBookByTitle(title string) (*BookRequest, error) {
     }
 
     return response, nil
+}
+
+func UpdateBook(req io.Reader) error{
+	var updateReq UpdateBookRequest
+	err := json.NewDecoder(req).Decode(&updateReq)
+	if err != nil {
+		return errors.New("Bad Request")
+	}
+	//validate request
+	if updateReq.Title == ""{
+		return errors.New("Title is required")
+	}
+	db, err := db.DBConnection()
+    if err != nil {
+        log.Default().Println(err.Error())
+        return errors.New("Internal Server Error")
+    }
+    defer db.MongoDB.Client().Disconnect(context.TODO())
+
+    coll := db.MongoDB.Collection("buku")
+
+    // Create filter and update document
+    filter := bson.M{"title": updateReq.Title}
+    update := bson.M{
+        "$set": bson.M{
+            "price": updateReq.Price,
+            "stock": updateReq.Stock,
+        },
+    }
+
+    result, err := coll.UpdateOne(context.TODO(), filter, update)
+    if err != nil {
+        log.Default().Println(err.Error())
+        return errors.New("Internal Server Error")
+    }
+
+    if result.MatchedCount == 0 {
+        return errors.New("Book not found")
+    }
+
+    return nil
 }

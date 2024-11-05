@@ -94,7 +94,23 @@ func BookController(w http.ResponseWriter, r *http.Request){
 		w.WriteHeader(http.StatusCreated)
 		json.NewEncoder(w).Encode("Book has been created successfully")
 	case "PUT":
-
+		err := service.UpdateBook(r.Body)
+        if err != nil {
+            switch err.Error() {
+            case "Bad Request", "Title is required":
+                http.Error(w, err.Error(), http.StatusBadRequest)
+            case "Book not found":
+                http.Error(w, err.Error(), http.StatusNotFound)
+            default:
+                http.Error(w, "Internal server error", http.StatusInternalServerError)
+            }
+            return
+        }
+        defer r.Body.Close()
+        w.Header().Add("Content-Type", "application/json")
+        w.WriteHeader(http.StatusOK)
+        json.NewEncoder(w).Encode("Book has been updated successfully")
+        return
 	case "DELETE":
 
 	default:
