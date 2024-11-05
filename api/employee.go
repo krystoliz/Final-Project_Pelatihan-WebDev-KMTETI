@@ -36,16 +36,15 @@ func EmployeeController(w http.ResponseWriter, r *http.Request){
 		} */
 
 		//Get all book if no title parameter
-		/* data, err := service.GetAllEmployee()
+		employees, err := service.GetEmployeesList()
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			return
 		}
 		w.Header().Add("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(data) */
-		/* w.Header().Add("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(bookList) */
-		/* return */
+		json.NewEncoder(w).Encode(employees) 
+		
+		 return
 
 	case "POST":
 		err := service.CreateEmployee(r.Body)
