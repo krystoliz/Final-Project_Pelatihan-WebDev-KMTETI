@@ -1,15 +1,15 @@
 package controller
 
 import (
-	"context"
+	/* "context" */
 	"encoding/json"
-	"fmt"
+	/* "fmt" */
 	"net/http"
-
-	"github.com/krystoliz/Final-Project_Pelatihan-WebDev-KMTETI/src/db"
+	"github.com/krystoliz/Final-Project_Pelatihan-WebDev-KMTETI/src/service"
+	/* "github.com/krystoliz/Final-Project_Pelatihan-WebDev-KMTETI/src/db"
 	"github.com/krystoliz/Final-Project_Pelatihan-WebDev-KMTETI/src/model"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/bson/primitive" */
 )
 
 type Book struct{
@@ -43,82 +43,66 @@ var BookList []*Book = []*Book{
 
 func BookController(w http.ResponseWriter, r *http.Request){
 	switch r.Method {
-		case "GET":
-			db, err := db.DBConnection()
-			if err != nil{
-				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-				return
-			}
+	case "GET":
+		// check if theres a title query parameter
+		title := r.URL.Query().Get("title")
 
-			coll := db.MongoDB.Collection("buku")
-			cur, err := coll.Find(context.TODO(), bson.D{})
-			if err != nil{
-				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-				return
-			}
-			
-			var bookList []*model.Book
-
-			for cur.Next(context.TODO()){
-				var prod model.Book
-				err:= cur.Decode(&prod)
-				if err!= nil{
-					http.Error(w, "Error decoding data", http.StatusInternalServerError)
+		if title != "" {
+			//Get specific book by name
+			book, err := service.GetBookByTitle(title)
+			if err != nil {
+				if err.Error()== "Book bot found"{
+					http.Error(w, err.Error(), http.StatusNotFound)
 					return
 				}
-				
-				fmt.Println(prod)
-				bookList = append(bookList, &prod)
-			}
-
-            w.Header().Add("Content-Type", "application/json")
-            json.NewEncoder(w).Encode(bookList)
-            return
-
-
-
-		case "POST":
-			var b Book 
-			err := json.NewDecoder(r.Body).Decode(&b)
-			if err != nil{
-				http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
-
-			db, err := db.DBConnection()
-			if err != nil{
-				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-				return
-			}
-
-			coll := db.MongoDB.Collection("buku")
-
-			_, err = coll.InsertOne(context.TODO(), model.Book{
-				ID: primitive.NewObjectID(),
-				Title: b.Title,
-				Author: b.Author,
-				Stock: b.Stock,
-				Year_released: int(b.Year_released),
-				Price: int(b.Price),
-			})
-			
-			if err != nil{
-				http.Error(w, err.Error(), http.StatusBadRequest)
-				return
-			}
-			w.WriteHeader(http.StatusCreated)
-			w.Write([]byte("book added successfully"))
-		
-		case "PUT":
-
-		case "DELETE":
-
-        default:
-            w.WriteHeader(http.StatusMethodNotAllowed)
-			w.Write([]byte("Method not allowed"))
+			w.Header().Add("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(book)
 			return
-	}
+		}
 
+
+
+		//Get all book if no title parameter
+		data, err := service.GetAllBook()
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Add("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(data)
+		/* w.Header().Add("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(bookList) */
+		return
+
+
+
+	case "POST":
+		err := service.CreateBook(r.Body)
+		if err != nil {
+			if err.Error() == "bad request"{
+				http.Error(w, err.Error(), http.StatusBadRequest)
+
+			}
+			http.Error(w, "internal server error" , http.StatusInternalServerError)
+			
+		}
+		defer r.Body.Close()
+		w.Header().Add("Content-Type", "application/json")
+		w.WriteHeader(http.StatusCreated)
+		json.NewEncoder(w).Encode("Book has been created successfully")
+	case "PUT":
+
+	case "DELETE":
+
+	default:
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		w.Write([]byte("Method not allowed"))
+		return
+}
+	w.Write([]byte("Hello from book"))
 }
 
 

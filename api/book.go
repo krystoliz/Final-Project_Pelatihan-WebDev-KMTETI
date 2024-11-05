@@ -17,6 +17,28 @@ import (
 func BookHandler(w http.ResponseWriter, r *http.Request){
 	switch r.Method {
 	case "GET":
+		// check if theres a title query parameter
+		title := r.URL.Query().Get("title")
+
+		if title != "" {
+			//Get specific book by name
+			book, err := service.GetBookByTitle(title)
+			if err != nil {
+				if err.Error()== "Book bot found"{
+					http.Error(w, err.Error(), http.StatusNotFound)
+					return
+				}
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			w.Header().Add("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(book)
+			return
+		}
+
+
+
+		//Get all book if no title parameter
 		data, err := service.GetAllBook()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)

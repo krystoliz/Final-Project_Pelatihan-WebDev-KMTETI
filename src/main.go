@@ -27,6 +27,7 @@ func main() {
 	})
 
 	h.HandleFunc("/api/user", userHandler)
+
 	h.HandleFunc("/api/books", controller.BookController) //if p is lowercase it wont be accessible to this file. If p is uppercase it will be accessible.
 	h.HandleFunc("/api/books-serverless", h1.BookHandler) 
 	h.HandleFunc("/api/test-db", controller.NewProductHandler)

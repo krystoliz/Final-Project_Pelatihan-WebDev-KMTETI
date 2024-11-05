@@ -14,6 +14,7 @@ import (
 	"github.com/krystoliz/Final-Project_Pelatihan-WebDev-KMTETI/src/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type Book struct{
@@ -101,3 +102,42 @@ func CreateBook(req io.Reader) error {
 			return nil
 }
 
+func GetBookByTitle(title string) (*BookRequest, error) {
+    // Establish database connection
+    db, err := db.DBConnection()
+    if err != nil {
+        log.Default().Println(err.Error())
+        return nil, errors.New("Internal Server Error")
+    }
+    defer db.MongoDB.Client().Disconnect(context.TODO())
+
+    // Get collection reference
+    coll := db.MongoDB.Collection("buku")
+
+    // Create filter for the query
+    filter := bson.M{"title": title}
+
+    // Create a variable to store the result
+    var book model.Book
+    err = coll.FindOne(context.TODO(), filter).Decode(&book)
+    
+    if err != nil {
+        if err == mongo.ErrNoDocuments {
+            return nil, errors.New("Book not found")
+        }
+        log.Default().Println(err.Error())
+        return nil, errors.New("Internal Server Error")
+    }
+
+    // Convert to response type
+    response := &BookRequest{
+       
+        Title:         book.Title,
+        Author:        book.Author,
+        Stock:         book.Stock,
+        Year_released: book.Year_released,
+        Price:         book.Price,
+    }
+
+    return response, nil
+}
