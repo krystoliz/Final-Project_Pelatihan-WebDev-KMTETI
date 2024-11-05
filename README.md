@@ -1,6 +1,6 @@
 # Final-Project_Pelatihan-WebDev-KMTETI
 
-# Employee Management System
+# Book & Employee Management System
 
 A RESTful API service built with Go and MongoDB for managing book data and employee data. This project was developed as part of the Final Project for KMTETI Web Development Training.
 
