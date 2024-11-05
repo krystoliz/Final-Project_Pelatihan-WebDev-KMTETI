@@ -233,6 +233,8 @@ The API returns appropriate HTTP status codes:
 ## Authors
 
 - **Jhon Samuel Kudadiri** - *Initial work* - [krystoliz](https://github.com/krystoliz)
+- **Claude + Copilot** - *API Endpoints and Service Function Code* 
+(https://claude.ai/chat/abdda77e-3404-4c0c-a14d-e7d2976bdfd4) - 60% GenAI + 40% Meeting 3-6 code
 
 ## License
 
