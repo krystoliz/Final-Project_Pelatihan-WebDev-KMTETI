@@ -4,6 +4,24 @@
 
 A RESTful API service built with Go and MongoDB for managing book data and employee data. This project was developed as part of the Final Project for KMTETI Web Development Training.
 
+## Table of Contents
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [API Endpoints](#api-endpoints)
+  - [Create Employee](#create-employee)
+  - [Get Employees List](#get-employees-list)
+- [Project Structure](#project-structure)
+- [Data Models](#data-models)
+  - [Employee](#employee)
+- [Error Handling](#error-handling)
+- [Contributing](#contributing)
+- [Authors](#authors)
+- [License](#license)
+- [Acknowledgments](#acknowledgments)
+- [Future Improvements](#future-improvements)
+
 ## Features
 - View book list
 - View the detail of a specific book
